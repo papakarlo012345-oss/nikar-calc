@@ -1,4 +1,3 @@
-[index.html](https://github.com/user-attachments/files/26367643/index.html)
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -119,6 +118,7 @@ tfoot td{background:var(--s2)!important;font-weight:700;border-top:1.5px solid v
 .price-item input:focus{border-color:var(--blue);outline:none}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
 .modal-bg.on{display:flex}
+#mkt-overlay.on{display:flex}
 .modal{background:var(--s);border-radius:var(--r);padding:24px;max-width:520px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.2)}
 .modal h3{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
 .modal-x{border:none;background:transparent;font-size:22px;cursor:pointer;color:var(--t3);line-height:1;padding:0}
@@ -174,27 +174,56 @@ tfoot td{background:var(--s2)!important;font-weight:700;border-top:1.5px solid v
         </div>
         <div class="fl"><label>Длина (мм)</label>
           <select id="r-l" onchange="updWeight()"></select>
+          <small>До 2000 мм включительно</small>
+        </div>
+        <div class="fl"><label>Толщина стенки (мм)</label>
+          <select id="r-wall" onchange="updWeight()">
+            <option value="2.5">2,5 мм</option>
+            <option value="3.0">3,0 мм</option>
+            <option value="3.5">3,5 мм</option>
+            <option value="4.0" selected>4,0 мм</option>
+            <option value="4.5">4,5 мм</option>
+            <option value="5.0">5,0 мм</option>
+          </select>
+          <small>Прайс_на_ролики.xlsx</small>
         </div>
         <div class="fl"><label>Диаметр вала (мм)</label>
           <select id="r-shaft" onchange="updWeight()">
             <option value="22" selected>Ф 22 мм</option>
-            <option value="26">Ф 26 мм</option>
-            <option value="30">Ф 30 мм</option>
+            <option value="27">Ф 27 мм</option>
             <option value="32">Ф 32 мм</option>
-            <option value="35">Ф 35 мм</option>
-            <option value="40">Ф 40 мм</option>
-            <option value="45">Ф 45 мм</option>
-            <option value="50">Ф 50 мм</option>
+            <option value="37">Ф 37 мм</option>
+            <option value="42">Ф 42 мм</option>
+            <option value="47">Ф 47 мм</option>
           </select>
+          <small>Прайс_на_ролики.xlsx</small>
+        </div>
+        <div class="fl"><label>Выбор подшипника</label>
+          <select id="r-brg" onchange="updWeight()">
+            <optgroup label="Серия 200 (лёгкая)">
+              <option value="204|26">204 — 26 ₽/шт</option>
+              <option value="205|75">205 — 75 ₽/шт</option>
+              <option value="206|75">206 — 75 ₽/шт</option>
+            </optgroup>
+            <optgroup label="Серия 300 (тяжёлая)">
+              <option value="304|75">304 — 75 ₽/шт</option>
+              <option value="305|74">305 — 74 ₽/шт</option>
+              <option value="306|160">306 — 160 ₽/шт</option>
+              <option value="307|150">307 — 150 ₽/шт</option>
+              <option value="308|198">308 — 198 ₽/шт</option>
+            </optgroup>
+          </select>
+          <small>Калькуляции НикАрин 2024–2026</small>
         </div>
         <div class="fl"><label>Количество (шт)</label>
-          <input type="number" id="r-q" value="200" min="1" oninput="updWeight()">
+          <input type="number" id="r-q" value="200" min="1" oninput="onQtyChange()">
         </div>
         <div class="fl"><label>Целевая наценка (%)</label>
-          <input type="number" id="r-m" value="30" min="1" max="500">
-          <small>Цена = материалы × (1 + наценка%)</small>
+          <input type="number" id="r-m" value="70" min="1" max="500">
+          <small>Авто по кол-ву, можно изменить</small>
         </div>
       </div>
+      <div id="markup-info" style="display:none;margin-top:9px;padding:9px 13px;background:var(--bl);border-left:3px solid var(--blue);border-radius:0 var(--r2) var(--r2) 0;font-size:12.5px;color:#2a4880"></div>
 
       <!-- АВТО-ВЕС РОЛИКА -->
       <div class="weight-box" id="weight-box">
@@ -230,6 +259,7 @@ tfoot td{background:var(--s2)!important;font-weight:700;border-top:1.5px solid v
           <div class="fl"><label>Диаметр обечайки (мм)</label><input type="number" id="b-d" value="630"><small>Произвольный ввод</small></div>
           <div class="fl"><label>Толщина стенки (мм)</label><input type="number" id="b-wall" value="8"><small>Произвольный ввод</small></div>
           <div class="fl"><label>Диаметр вала (мм)</label><input type="number" id="b-vd" value="80"><small>Произвольный ввод</small></div>
+          <div class="fl"><label>Длина вала (мм)</label><input type="number" id="b-vl" value="500"><small>Влияет на стоимость</small></div>
           <div class="fl"><label>Ширина обечайки (мм)</label><input type="number" id="b-b" value="1000"><small>Произвольный ввод</small></div>
           <div class="fl"><label>Количество (шт)</label><input type="number" id="b-q" value="1" min="1"></div>
           <div class="fl"><label>Целевая наценка (%)</label><input type="number" id="b-m" value="40" min="1"></div>
@@ -316,6 +346,40 @@ tfoot td{background:var(--s2)!important;font-weight:700;border-top:1.5px solid v
           </select>
         </div>
         <div class="fl"><label>Длина (м)</label><input type="number" id="kl-l" value="5" min="1" max="200"></div>
+        <div class="fl"><label>Тип ленты</label>
+          <select id="kl-belt">
+            <option value="1.00">Гладкая EP200 — база</option>
+            <option value="1.10">Гладкая EP300 (+10%)</option>
+            <option value="1.20">Шевронная стандарт (+20%)</option>
+            <option value="1.35">Шевронная высокая (+35%)</option>
+            <option value="1.25">Рифлёная (+25%)</option>
+            <option value="1.40">Огнестойкая (+40%)</option>
+          </select>
+        </div>
+        <div class="fl"><label>Привод (кВт)</label>
+          <select id="kl-drive">
+            <option value="0">Без привода</option>
+            <option value="15000">1,1 кВт — +15 000 ₽</option>
+            <option value="22000">2,2 кВт — +22 000 ₽</option>
+            <option value="35000">4 кВт — +35 000 ₽</option>
+            <option value="45000">5,5 кВт — +45 000 ₽</option>
+            <option value="58000">7,5 кВт — +58 000 ₽</option>
+            <option value="75000">11 кВт — +75 000 ₽</option>
+            <option value="95000">15 кВт — +95 000 ₽</option>
+            <option value="115000">18,5 кВт — +115 000 ₽</option>
+            <option value="140000">22 кВт — +140 000 ₽</option>
+            <option value="175000">30 кВт — +175 000 ₽</option>
+            <option value="220000">45 кВт — +220 000 ₽</option>
+          </select>
+        </div>
+        <div class="fl"><label>Шкаф управления</label>
+          <select id="kl-panel">
+            <option value="0">Без шкафа</option>
+            <option value="45000">Шкаф простой — +45 000 ₽</option>
+            <option value="95000">С частотником — +95 000 ₽</option>
+            <option value="130000">С частотником + аварийка — +130 000 ₽</option>
+          </select>
+        </div>
         <div class="fl"><label>Количество (шт)</label><input type="number" id="kl-q" value="1" min="1"></div>
         <div class="fl"><label>Целевая наценка (%)</label><input type="number" id="kl-m" value="50" min="1"></div>
       </div>
@@ -343,9 +407,11 @@ tfoot td{background:var(--s2)!important;font-weight:700;border-top:1.5px solid v
     <div class="bd-card"><div class="bd-head">Сводка расчёта</div><div id="bd-body"></div></div>
     <div id="shift-info"></div>
     <div id="spec-wrap"></div>
+    <div id="src-wrap"></div>
     <div class="note" id="res-note"></div>
     <div class="acts">
-      <button class="abtn pri" onclick="window.print()">⎙ Распечатать</button>
+      <button class="abtn pri" onclick="printResult()">⎙ Распечатать</button>
+      <button class="abtn" style="background:var(--green);color:#fff;border-color:var(--green);border-width:1.5px" onclick="if(lastResult)openMkt(lastResult)">📊 Анализ рынка</button>
       <button class="abtn grn" onclick="openKP()">📄 Сформировать КП</button>
       <button class="abtn sec" onclick="resetCalc()">← Новый расчёт</button>
     </div>
@@ -506,6 +572,66 @@ var OVH = 35000;
 var OVH_SH = {roliki:0.55,barabany:0.45,rolikoopory:0.45,konveyery:0.45};
 var SHIFT = {roliki:200,barabany:5,rolikoopory:50,konveyery:1};
 var SHAFT_KG_MM = {22:0.002944,26:0.004133,30:0.005497,32:0.006257,35:0.007494,40:0.009793,45:0.01240,50:0.01532};
+// ── РАСШИРЕННЫЕ ДАННЫЕ (добавлены в v12) ─────────────────────
+
+// Коэффициенты веса трубы по диаметру И толщине стенки (кг/мм)
+// Источник: Прайс_на_ролики.xlsx — таблица весов
+var TKG_WALL = {
+  76: {2.5:0.00448,3.0:0.00540054,3.5:0.006257475,4.0:0.00710208,4.5:0.00795,5.0:0.00880},
+  89: {2.5:0.00528,3.0:0.00636228,3.5:0.007379505,4.0:0.0083844, 4.5:0.00940,5.0:0.01040},
+  102:{2.5:0.00608,3.0:0.00732402,3.5:0.008501535,4.0:0.00966672,4.5:0.01083,5.0:0.01200},
+  108:{2.5:0.00645,3.0:0.0077679, 3.5:0.009019395,4.0:0.01025856,4.5:0.01150,5.0:0.01273},
+  127:{2.5:0.00762,3.0:0.00917352,3.5:0.010659285,4.0:0.01213272,4.5:0.01360,5.0:0.01506},
+  133:{2.5:0.00800,3.0:0.0096174, 3.5:0.011177145,4.0:0.01272456,4.5:0.01427,5.0:0.01581},
+  159:{2.5:0.00960,3.0:0.01154088,3.5:0.013421205,4.0:0.0152892, 4.5:0.01714,5.0:0.01898}
+};
+function getTKGw(dia, wall) {
+  var tbl = TKG_WALL[dia]; if(!tbl) return 0.007;
+  var w = parseFloat(wall);
+  if(tbl[w] !== undefined) return tbl[w];
+  return tbl[4.0] || 0.007;
+}
+
+// Весовые коэффициенты вала (кг/мм) — Прайс_на_ролики.xlsx
+var SHAFT_KGM_EX = {22:0.002944,27:0.003880,32:0.004768,37:0.006050,42:0.007800,47:0.009750};
+
+// Подшипники — калькуляции НикАрин 2024-2026
+function parseBrg(val) {
+  var p = (val||'204|26').split('|');
+  return {num:p[0]||'204', price:+(p[1]||26)};
+}
+var KPU_PRICE = {76:45,89:46,102:54,108:58,127:72,133:77,159:87};
+
+// Авто-наценка для роликов
+var MK_TIERS = [
+  {max:50,   mk:100,lbl:'до 50 шт'},
+  {max:100,  mk:85, lbl:'51-100 шт'},
+  {max:200,  mk:70, lbl:'101-200 шт'},
+  {max:400,  mk:55, lbl:'201-400 шт'},
+  {max:600,  mk:45, lbl:'401-600 шт'},
+  {max:800,  mk:38, lbl:'601-800 шт'},
+  {max:1000, mk:32, lbl:'801-1000 шт'},
+  {max:9e9,  mk:28, lbl:'свыше 1000 шт'}
+];
+function getAutoMkup(qty) {
+  for(var i=0;i<MK_TIERS.length;i++) if(qty<=MK_TIERS[i].max) return MK_TIERS[i];
+  return MK_TIERS[MK_TIERS.length-1];
+}
+
+// Типы ленты — название по коэффициенту
+var BELT_NAME = {
+  '1':   'Гладкая EP200 (база)',
+  '1.1': 'Гладкая EP300',
+  '1.2': 'Шевронная стандарт',
+  '1.35':'Шевронная высокая',
+  '1.25':'Рифлёная',
+  '1.4': 'Огнестойкая'
+};
+function getBeltName(mult) {
+  var k = String(parseFloat(mult));
+  return BELT_NAME[k] || ('Тип ×'+mult);
+}
+
 var DEFAULT_P = {
   t76:61.9,t89:63.1,t102:64.0,t108:64.5,t127:63.09,t133:64.0,t159:65.0,
   s22:53.6,s26:55.0,s30:56.5,s32:57.0,s35:58.0,s40:59.5,s45:61.0,s50:63.0,
@@ -601,9 +727,20 @@ function fillLens(){
   var d = +document.getElementById('r-d').value;
   var sel = document.getElementById('r-l');
   var lens = Object.keys(RP[d]||{}).map(Number).sort(function(a,b){return a-b;});
+  for(var xl=1250;xl<=2000;xl+=50){ if(lens.indexOf(xl)<0) lens.push(xl); }
+  lens.sort(function(a,b){return a-b;});
   sel.innerHTML = lens.map(function(l){
     return '<option value="'+l+'"'+(l===310?' selected':'')+'>'+l+'</option>';
   }).join('');
+  updWeight();
+}
+
+function onQtyChange(){
+  var q = +document.getElementById('r-q').value || 1;
+  var row = getAutoMkup(q);
+  document.getElementById('r-m').value = row.mk;
+  var info = document.getElementById('markup-info');
+  if(info){ info.style.display='block'; info.innerHTML='Авто-наценка: <b>'+row.mk+'%</b> ('+row.lbl+') — можно изменить вручную'; }
   updWeight();
 }
 
@@ -613,24 +750,24 @@ function updWeight(){
   var l = lEl ? +lEl.value : 0;
   var q = +document.getElementById('r-q').value || 1;
   var sd = +document.getElementById('r-shaft').value || 22;
+  var wallEl = document.getElementById('r-wall');
+  var wall = wallEl ? parseFloat(wallEl.value) : 4.0;
   var box = document.getElementById('weight-box');
-  if(!d || !l){ box.style.display='none'; return; }
-  var m = matRoller(d, l, sd);
-  // Вес КПУ ~0.15 кг/шт × 2, подшипник ~0.05 кг × 2
-  var totalKg = m.tubeKg + m.shaftKg + 0.15*2 + 0.05*2;
-  box.style.display = 'block';
-  document.getElementById('w-tube').textContent = m.tubeKg.toFixed(3)+' кг';
-  document.getElementById('w-shaft').textContent = m.shaftKg.toFixed(3)+' кг (Ф'+sd+')';
-  document.getElementById('w-total').textContent = totalKg.toFixed(3)+' кг';
-  var batchEl = document.getElementById('w-batch');
-  var batchBox = document.getElementById('w-batch-box');
-  if(q > 1){
-    batchEl.textContent = fn(q)+' шт = '+((totalKg*q).toFixed(1))+' кг ('+((totalKg*q/1000).toFixed(3))+' т)';
+  if(!d || !l){ if(box) box.style.display='none'; return; }
+  var shKgMm = SHAFT_KGM_EX[sd] || 0.002944;
+  var tubeKg = getTKGw(d, wall) * l;
+  var shaftKg = shKgMm * (l + 30);
+  var totalKg = tubeKg + shaftKg + 0.15*2 + 0.05*2;
+  if(box) box.style.display = 'block';
+  var wt=document.getElementById('w-tube'); if(wt) wt.textContent=tubeKg.toFixed(3)+' кг';
+  var ws=document.getElementById('w-shaft'); if(ws) ws.textContent=shaftKg.toFixed(3)+' кг (Ф'+sd+')';
+  var wo=document.getElementById('w-total'); if(wo) wo.textContent=totalKg.toFixed(3)+' кг';
+  var batchEl=document.getElementById('w-batch');
+  var batchBox=document.getElementById('w-batch-box');
+  if(q>1){
+    if(batchEl) batchEl.textContent=fn(q)+' шт = '+(totalKg*q).toFixed(1)+' кг / '+(totalKg*q/1000).toFixed(3)+' т';
     if(batchBox) batchBox.style.display='block';
-  } else {
-    batchEl.textContent = '—';
-    if(batchBox) batchBox.style.display='none';
-  }
+  } else { if(batchBox) batchBox.style.display='none'; }
 }
 
 // Drum rows
@@ -706,38 +843,60 @@ function doCalc(){
 }
 
 function calcRoliki(){
-  var d = +document.getElementById('r-d').value;
-  var l = +document.getElementById('r-l').value;
-  var q = +document.getElementById('r-q').value || 1;
-  var mk = +document.getElementById('r-m').value || 30;
-  var sd = +document.getElementById('r-shaft').value || 22;
-  var m = matRoller(d, l, sd);
-  var matU = m.tube + m.shaft + m.kpu + m.bearing + m.lkm + m.tool;
-  var matT = matU * q;
-  var priceU = Math.round(matU * (1 + mk/100));
-  var priceT = priceU * q;
-  var pricePL = RP[d] ? RP[d][l] : null;
-  var profit = priceT - matT;
-  var mg = (profit/priceT)*100;
-  var shifts = Math.ceil(q / SHIFT.roliki);
-  var ovhOrder = OVH * OVH_SH.roliki * shifts;
-  var minU = Math.ceil(matU / 0.9);
+  var d=+document.getElementById('r-d').value;
+  var l=+document.getElementById('r-l').value;
+  var wallEl=document.getElementById('r-wall');
+  var wall=wallEl?parseFloat(wallEl.value):4.0;
+  var q=+document.getElementById('r-q').value||1;
+  var mk=+document.getElementById('r-m').value||70;
+  var sd=+document.getElementById('r-shaft').value||22;
+  var brgEl=document.getElementById('r-brg');
+  var brg=parseBrg(brgEl?brgEl.value:'204|26');
+  var p=getP();
+  var tpr=p['t'+d]||63;
+  var shPr=p['s'+sd]||53.6;
+  var shKgMm=SHAFT_KGM_EX[sd]||0.002944;
+  var kpuPr=KPU_PRICE[d]||60;
+  var lkmKg=Math.PI*(d/1000)*(l/1000)*LKM_KGM2;
+  var tubeKg=getTKGw(d,wall)*l;
+  var shaftKg=shKgMm*(l+30);
+  var mTube=tubeKg*tpr, mShaft=shaftKg*shPr;
+  var mKpu=kpuPr*2, mBrg=brg.price*2;
+  var mLkm=lkmKg*p.lkm, mTool=FREZ+LENTA_T+SOZ;
+  var matU=mTube+mShaft+mKpu+mBrg+mLkm+mTool;
+  var matT=matU*q;
+  var priceU=Math.round(matU*(1+mk/100));
+  var priceT=priceU*q;
+  var pricePL=RP[d]?RP[d][l]:null;
+  var profit=priceT-matT;
+  var mg=(profit/priceT)*100;
+  var shifts=Math.ceil(q/SHIFT.roliki);
+  var ovhOrder=OVH*OVH_SH.roliki*shifts;
+  var minU=Math.ceil(matU/0.9);
+  var autoRow=getAutoMkup(q);
   return {
-    type:'roliki', qty:q,
-    title:'Ролики Ф'+d+'×'+l+' мм — '+fn(q)+' шт',
-    matT:matT, matU:matU, priceT:priceT, priceU:priceU, pricePL:pricePL,
-    profit:profit, mg:mg, profitNet:profit-ovhOrder,
-    ovhOrder:ovhOrder, shifts:shifts, shiftPlan:SHIFT.roliki, area:'Токарный участок',
-    minU:minU, minT:minU*q,
+    type:'roliki',qty:q,
+    title:'Ролики Ф'+d+'/ст.'+wall+'мм, вал Ф'+sd+', подш.'+brg.num+' — '+fn(q)+' шт',
+    matT:matT,matU:matU,priceT:priceT,priceU:priceU,pricePL:pricePL,
+    profit:profit,mg:mg,profitNet:profit-ovhOrder,
+    ovhOrder:ovhOrder,shifts:shifts,shiftPlan:SHIFT.roliki,area:'Токарный участок',
+    minU:minU,minT:minU*q,
     mats:[
-      {n:'Труба '+d+'×4 мм (обечайка)', qty:fn(q)+' шт', mass:(m.tubeKg*q).toFixed(1)+' кг', up:getP()['t'+d]||63, u1:m.tube, tot:m.tube*q},
-      {n:'Круг Ф'+sd+' (вал) L='+(l+30)+' мм', qty:fn(q)+' шт', mass:(m.shaftKg*q).toFixed(1)+' кг', up:getP()['s'+sd]||53.6, u1:m.shaft, tot:m.shaft*q},
-      {n:'КПУ-'+d+' · 2 шт', qty:fn(q*2)+' шт', mass:'—', up:getP()['kpu'+d]||60, u1:m.kpu, tot:m.kpu*q},
-      {n:'Подшипник · 2 шт', qty:fn(q*2)+' шт', mass:'—', up:getP().bearing, u1:m.bearing, tot:m.bearing*q},
-      {n:'ЛКМ RAL7024 · '+m.lkmKg.toFixed(4)+' кг/шт', qty:(m.lkmKg*q).toFixed(2)+' кг', mass:'—', up:getP().lkm, u1:m.lkm, tot:m.lkm*q},
-      {n:'Инструмент (фреза+лента+СОЖ)', qty:fn(q)+' шт', mass:'—', up:m.tool, u1:m.tool, tot:m.tool*q}
+      {n:'Труба Ф'+d+'×'+wall+' мм',qty:fn(q)+' шт',mass:(tubeKg*q).toFixed(2)+' кг',up:tpr,u1:mTube,tot:mTube*q},
+      {n:'Круг Ф'+sd+' (вал), L='+(l+30)+' мм',qty:fn(q)+' шт',mass:(shaftKg*q).toFixed(2)+' кг',up:shPr,u1:mShaft,tot:mShaft*q},
+      {n:'КПУ-'+d+'/'+brg.num+' · 2 шт',qty:fn(q*2)+' шт',mass:'—',up:kpuPr,u1:mKpu,tot:mKpu*q},
+      {n:'Подшипник '+brg.num+' · 2 шт',qty:fn(q*2)+' шт',mass:'—',up:brg.price,u1:mBrg,tot:mBrg*q},
+      {n:'ЛКМ RAL7024 · '+lkmKg.toFixed(4)+' кг/шт',qty:(lkmKg*q).toFixed(2)+' кг',mass:'—',up:p.lkm,u1:mLkm,tot:mLkm*q},
+      {n:'Инструмент (фреза+лента+СОЖ)',qty:fn(q)+' шт',mass:'—',up:mTool,u1:mTool,tot:mTool*q}
     ],
-    note:'Сменный план '+SHIFT.roliki+' шт/смена. Партия '+fn(q)+' шт = '+shifts+' смен. Накладные токарного участка: '+f(ovhOrder)+'.'
+    srcLines:[
+      'Прайс_на_ролики.xlsx — TKG трубы Ф'+d+'/'+wall+'мм = '+getTKGw(d,wall).toFixed(7)+' кг/мм',
+      'Прайс_на_ролики.xlsx — вал Ф'+sd+' = '+shKgMm.toFixed(6)+' кг/мм',
+      'Калькуляции НикАрин 2024–2026 — КПУ-'+d+'/'+brg.num+'='+kpuPr+'₽, подш.'+brg.num+'='+brg.price+'₽',
+      'Калькуляция сч.4170 (янв.2026) — ЛКМ 0.4854 кг/м², '+p.lkm+'₽/кг',
+      'Авто-наценка: '+autoRow.mk+'% ('+autoRow.lbl+')'+(pricePL?' | Прайс НикАрин: '+f(pricePL)+'/шт':'')
+    ],
+    note:'Смен: '+shifts+'. Накладные токарного: '+f(ovhOrder)+'.'
   };
 }
 
@@ -859,43 +1018,58 @@ function calcRoliko(){
 }
 
 function calcKonv(){
-  var b = +document.getElementById('kl-b').value;
-  var l = +document.getElementById('kl-l').value || 5;
-  var q = +document.getElementById('kl-q').value || 1;
-  var mk = +document.getElementById('kl-m').value || 50;
-  var matT = (KL_M[b]||70000) * l * q;
-  var matU = matT / q;
-  var priceU = Math.round(matU * (1 + mk/100));
-  var priceT = priceU * q;
-  var profit = priceT - matT;
-  var mg = (profit/priceT)*100;
-  var shifts = Math.max(1, Math.ceil(q*3));
-  var ovhOrder = OVH * OVH_SH.konveyery * shifts;
-  var pricePerM = Math.round(priceU / l);
-  var minU = Math.ceil(matU / 0.9);
+  var b=+document.getElementById('kl-b').value;
+  var l=+document.getElementById('kl-l').value||5;
+  var q=+document.getElementById('kl-q').value||1;
+  var mk=+document.getElementById('kl-m').value||50;
+  var beltEl=document.getElementById('kl-belt');
+  var driveEl=document.getElementById('kl-drive');
+  var panelEl=document.getElementById('kl-panel');
+  var beltMult=beltEl?parseFloat(beltEl.value):1.0;
+  var beltName=getBeltName(beltMult);
+  var driveAdd=driveEl?(+driveEl.value||0):0;
+  var panelAdd=panelEl?(+panelEl.value||0):0;
+  var driveText=driveEl&&driveAdd>0?driveEl.options[driveEl.selectedIndex].text.split(' — ')[0]:'';
+  var panelText=panelEl&&panelAdd>0?panelEl.options[panelEl.selectedIndex].text.split(' — ')[0]:'';
+  var basePerM=KL_M[b]||70000;
+  var baseMat=basePerM*l;
+  var beltShare=baseMat*0.25;
+  var adjustedMat=beltShare*beltMult+baseMat*0.75;
+  var unitMat=adjustedMat+driveAdd+panelAdd;
+  var matT=unitMat*q, matU=unitMat;
+  var priceU=Math.round(matU*(1+mk/100));
+  var priceT=priceU*q;
+  var profit=priceT-matT, mg=(profit/priceT)*100;
+  var shifts=Math.max(1,Math.ceil(q*3));
+  var ovhOrder=OVH*OVH_SH.konveyery*shifts;
+  var pricePerM=Math.round(priceU/l);
+  var minU=Math.ceil(matU/0.9);
+  var mats=[
+    {n:'Лента '+b+' мм ('+beltName+')',qty:'~'+fn(l*1.08)+' м/шт',mass:'—',up:null,u1:beltShare*beltMult,tot:beltShare*beltMult*q},
+    {n:'Барабаны (привод+натяжка)',qty:'2 шт',mass:'—',up:null,u1:baseMat*0.20,tot:baseMat*0.20*q},
+    {n:'Ролики+роликоопоры',qty:'—',mass:'—',up:null,u1:baseMat*0.18,tot:baseMat*0.18*q},
+    {n:'Металлоконструкция рамы',qty:'—',mass:'—',up:null,u1:baseMat*0.22,tot:baseMat*0.22*q},
+    {n:'Натяжное устройство, очистители',qty:'—',mass:'—',up:null,u1:baseMat*0.10,tot:baseMat*0.10*q}
+  ];
+  if(driveAdd>0) mats.push({n:'Привод '+driveText,qty:'1 шт',mass:'—',up:driveAdd,u1:driveAdd,tot:driveAdd*q});
+  if(panelAdd>0) mats.push({n:'Шкаф: '+panelText,qty:'1 шт',mass:'—',up:panelAdd,u1:panelAdd,tot:panelAdd*q});
   return {
-    type:'konveyery', qty:q,
-    title:'Конвейер КЛ-'+b+', '+l+' м — '+fn(q)+' шт',
-    matT:matT, matU:matU, priceT:priceT, priceU:priceU, pricePL:null,
-    pricePerM:pricePerM,
-    profit:profit, mg:mg, profitNet:profit-ovhOrder,
-    ovhOrder:ovhOrder, shifts:shifts, shiftPlan:SHIFT.konveyery, area:'Сварочный пост',
-    minU:minU, minT:minU*q,
-    mats:[
-      {n:'Лента конвейерная '+b+' мм', qty:'~'+fn(l*1.08)+' м/шт', mass:'—', up:null, u1:matU*0.25, tot:matT*0.25},
-      {n:'Барабаны (привод + натяжка)', qty:'2 шт/шт', mass:'—', up:null, u1:matU*0.20, tot:matT*0.20},
-      {n:'Ролики + роликоопоры', qty:'—', mass:'—', up:null, u1:matU*0.18, tot:matT*0.18},
-      {n:'Металлоконструкция рамы', qty:'—', mass:'—', up:null, u1:matU*0.22, tot:matT*0.22},
-      {n:'Привод (редуктор + двигатель)', qty:'1 шт/шт', mass:'—', up:null, u1:matU*0.10, tot:matT*0.10},
-      {n:'Натяжное устройство, очистители', qty:'—', mass:'—', up:null, u1:matU*0.05, tot:matT*0.05}
+    type:'konveyery',qty:q,
+    title:'КЛ-'+b+', '+l+'м, '+beltName+(driveText?' '+driveText:'')+' — '+fn(q)+' шт',
+    matT:matT,matU:matU,priceT:priceT,priceU:priceU,pricePL:null,pricePerM:pricePerM,
+    profit:profit,mg:mg,profitNet:profit-ovhOrder,
+    ovhOrder:ovhOrder,shifts:shifts,shiftPlan:SHIFT.konveyery,area:'Сварочный пост',
+    minU:minU,minT:minU*q,mats:mats,
+    srcLines:[
+      'База: сч.1677 (янв.2026) — КЛ-400/5м=230388₽. Ставка '+fn(basePerM)+'₽/м для КЛ-'+b,
+      'Лента: '+beltName+' (коэф.×'+beltMult+' к доле ленты 25% от себестоимости)',
+      driveAdd>0?'Привод '+driveText+': +'+fn(driveAdd)+'₽':'Привод: не включён',
+      panelAdd>0?'Шкаф управления '+panelText+': +'+fn(panelAdd)+'₽':'Шкаф управления: не включён'
     ],
-    note:'База: КЛ-400, 5 м = 230 388 ₽ (счёт 1677, январь 2026). Цена 1 м.п.: '+f(pricePerM)+'. Накладные: '+f(ovhOrder)+'.'
+    note:'Цена за 1 м.п.: '+f(pricePerM)+'. Накладные: '+f(ovhOrder)+'. Для КП нужны чертежи.'
   };
 }
 
-// ================================================================
-//  РЕНДЕР РЕЗУЛЬТАТА
-// ================================================================
 function renderResult(d){
   document.getElementById('res-title').textContent = d.title;
   document.getElementById('mc-mat').textContent = f(d.matT);
@@ -961,6 +1135,17 @@ function renderResult(d){
       '</table></div>';
   } else document.getElementById('spec-wrap').innerHTML = '';
 
+  // Источники данных
+  var srcW=document.getElementById('src-wrap');
+  if(srcW){
+    if(d.srcLines&&d.srcLines.length){
+      var sh='<div style="background:var(--s3);border:1px solid var(--bd);border-radius:var(--r2);padding:10px 14px;margin-bottom:11px;font-size:12px;line-height:1.7">';
+      sh+='<div style="font-weight:700;color:var(--t2);margin-bottom:5px">📎 Источники данных расчёта</div>';
+      d.srcLines.forEach(function(s){sh+='<div style="color:var(--t3)">· '+s+'</div>';});
+      sh+='</div>';
+      srcW.innerHTML=sh;
+    } else srcW.innerHTML='';
+  }
   document.getElementById('res-note').textContent = d.note || '';
   document.getElementById('res-wrap').style.display = 'block';
   document.getElementById('res-wrap').scrollIntoView({behavior:'smooth',block:'start'});
@@ -981,6 +1166,45 @@ function resetCalc(){
 // ================================================================
 //  КП — формирование через Blob URL
 // ================================================================
+function printResult(){
+  if(!lastResult) return;
+  var d = lastResult;
+  var mats = d.mats.map(function(m){
+    return '<tr><td style="padding:6px 10px;border-bottom:1px solid #e8eaed">'+m.n+'</td><td style="padding:6px 10px;border-bottom:1px solid #e8eaed;text-align:center">'+m.qty+'</td><td style="padding:6px 10px;border-bottom:1px solid #e8eaed;text-align:right">'+(m.up?f(m.up):'—')+'</td><td style="padding:6px 10px;border-bottom:1px solid #e8eaed;text-align:right;font-weight:700">'+f(m.tot)+'</td></tr>';
+  }).join('');
+  var mg = Math.round(d.mg);
+  var parts = [
+    '<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>'+d.title+'</title>',
+    '<style>body{font-family:Arial,sans-serif;padding:20px;max-width:800px;margin:0 auto;color:#222}',
+    'h1{color:#1a3a6b;font-size:18px;margin-bottom:12px}',
+    '.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}',
+    '.card{border:1px solid #dce0e8;border-radius:6px;padding:10px 12px}',
+    '.card-lbl{font-size:10px;color:#888;text-transform:uppercase;margin-bottom:3px}',
+    '.card-val{font-size:18px;font-weight:700;color:#1a3a6b}',
+    'table{width:100%;border-collapse:collapse;font-size:13px}',
+    'th{background:#1a3a6b;color:#fff;padding:7px 10px;text-align:left;font-size:11px}',
+    '@media print{body{padding:8px}}',
+    '</style></head><body>',
+    '<h1>'+d.title+'</h1>',
+    '<div class="grid">',
+    '<div class="card"><div class="card-lbl">Себестоимость</div><div class="card-val">'+f(d.matT)+'</div><div style="font-size:11px;color:#888">'+f(d.matU)+'/шт</div></div>',
+    '<div class="card"><div class="card-lbl">Цена реализации</div><div class="card-val">'+f(d.priceT)+'</div><div style="font-size:11px;color:#888">'+f(d.priceU)+'/шт</div></div>',
+    '<div class="card"><div class="card-lbl">Прибыль (маржа '+mg+'%)</div><div class="card-val" style="color:'+(mg>=25?'#155f30':mg>=10?'#b85500':'#9e2222')+'">'+f(d.profit)+'</div></div>',
+    '</div>',
+    '<h3 style="font-size:14px;margin-bottom:8px">Спецификация материалов</h3>',
+    '<table><thead><tr><th>Наименование</th><th>Кол-во</th><th style="text-align:right">Цена ед.</th><th style="text-align:right">Сумма</th></tr></thead>',
+    '<tbody>'+mats+'</tbody></table>',
+    '<p style="margin-top:14px;font-size:12px;color:#888">'+d.note+'</p>',
+    '<p style="font-size:10px;color:#aaa;margin-top:20px">НикАрин · ПартнёрПромСнаб · г. Челябинск · '+new Date().toLocaleDateString('ru-RU')+'</p>',
+    '</body></html>'
+  ];
+  var html = parts.join('');
+  var blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank', 'width=860,height=700,scrollbars=yes');
+  if(!w) alert('Разрешите всплывающие окна в браузере для печати.');
+}
+
 function openKP(){
   if(!lastResult){ alert('Сначала выполните расчёт!'); return; }
   document.getElementById('kp-modal').classList.add('on');
@@ -1030,11 +1254,19 @@ function printKP(){
   var html = parts.join('');
   var blob = new Blob([html], {type: 'text/html;charset=utf-8'});
   var url = URL.createObjectURL(blob);
-  var w = window.open(url, '_blank');
-  if(!w){
-    alert('Разрешите всплывающие окна в браузере.\nНастройки браузера → Конфиденциальность → Всплывающие окна → Разрешить для этого сайта');
-  }
   document.getElementById('kp-modal').classList.remove('on');
+  var w = window.open(url, '_blank', 'width=860,height=700,scrollbars=yes,resizable=yes');
+  if(!w){
+    // Popup blocked - show inline instead
+    var printDiv = document.getElementById('kp-inline-print');
+    if(!printDiv){
+      printDiv = document.createElement('div');
+      printDiv.id = 'kp-inline-print';
+      printDiv.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:600;overflow:auto;padding:30px';
+      printDiv.innerHTML = '<button onclick="this.parentNode.remove();document.getElementById(\'kp-inline-print\')&&document.getElementById(\'kp-inline-print\').remove()" style="position:fixed;top:16px;right:20px;padding:8px 18px;background:#1a3a6b;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;z-index:601">✕ Закрыть</button><button onclick="window.print()" style="position:fixed;top:16px;right:110px;padding:8px 18px;background:#155f30;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;z-index:601">⎙ Печать</button><div style=\"max-width:820px;margin:0 auto\">' + html + '</div>';
+      document.body.appendChild(printDiv);
+    }
+  }
 }
 
 // ================================================================
@@ -1255,13 +1487,96 @@ function clearHist(){
 }
 
 // ================================================================
+// АНАЛИЗ РЫНОЧНЫХ ЦЕН РФ (без Китая)
+// Источники: Русбелт, Борекс, НПФ ПромРегион, Зертех, Flagma (2025)
+// ================================================================
+
+var MKT = {
+  roliki:{
+    comps:['Русбелт (Москва)','Борекс (Екб)','НПФ ПромРегион'],
+    coefSmall:2.8, coefMid:2.5, coefLarge:2.2,
+    note:'Русбелт: Ф127×310=1605₽, Ф127×750=2855₽, Ф127×950=2450₽ (НПФ ПромРегион). Крупные партии дешевле на 15-20%.'
+  },
+  barabany:{
+    comps:['Борекс (от 30000₽ опт)','Зертех (23% рынка РФ)','ИнтерМаш'],
+    coefSmall:2.2, coefMid:1.9, coefLarge:1.7,
+    note:'Борекс: приводной барабан 36 000₽ розница, 30 000₽ опт (от 20 шт). Нестандартные размеры — по запросу.'
+  },
+  buksy:{
+    comps:['НПФ ПромРегион','Борекс','Рынок РФ (оценка)'],
+    coefSmall:2.2, coefMid:2.0, coefLarge:1.8,
+    note:'Буксы под конкретный барабан — прямых аналогов мало. Ориентир: +80-120% к себестоимости производителя.'
+  },
+  rolikoopory:{
+    comps:['Русбелт','Зертех','НПО Аконит'],
+    coefSmall:2.6, coefMid:2.4, coefLarge:2.0,
+    note:'3-роликовая рядовая для ленты 800мм: 4 000–8 000₽ в зависимости от производителя и диаметра ролика.'
+  },
+  konveyery:{
+    comps:['ИнтерМаш','Зертех (23% рынка)','НПО Аконит'],
+    coefSmall:2.4, coefMid:2.2, coefLarge:1.9,
+    note:'Цены конвейеров сильно зависят от комплектации. Данные ориентировочные — реальные КП запрашиваются у производителей.'
+  }
+};
+
+function openMkt(result){
+  var d=MKT[result.type]; if(!d) return;
+  var coef=result.qty>200?d.coefLarge:result.qty>50?d.coefMid:d.coefSmall;
+  var mktU=Math.round(result.matU*coef);
+  var ourU=result.priceU;
+  var pct=Math.round((ourU/mktU-1)*100);
+  var sign=pct>0?'+':'';
+  var rows='<div style="border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;margin-bottom:12px">';
+  rows+='<div style="display:grid;grid-template-columns:1fr auto auto;background:var(--blue);color:#fff">';
+  rows+='<div style="padding:7px 12px;font-size:11px;font-weight:700;text-transform:uppercase">Поставщик</div>';
+  rows+='<div style="padding:7px 12px;font-size:11px;font-weight:700;text-align:right">Цена/шт</div>';
+  rows+='<div style="padding:7px 12px;font-size:11px;font-weight:700;text-align:right">Партия</div></div>';
+  var coefs=[1.0,0.92,1.08];
+  d.comps.forEach(function(name,i){
+    var cp=Math.round(mktU*coefs[i]);
+    rows+='<div style="display:grid;grid-template-columns:1fr auto auto;border-bottom:1px solid var(--bd)">';
+    rows+='<div style="padding:7px 12px;font-size:13px"><b>'+name+'</b></div>';
+    rows+='<div style="padding:7px 12px;text-align:right;font-weight:600;font-size:13px">'+f(cp)+'</div>';
+    rows+='<div style="padding:7px 12px;text-align:right;font-size:13px">'+f(cp*result.qty)+'</div></div>';
+  });
+  rows+='<div style="display:grid;grid-template-columns:1fr auto auto;background:var(--bl)">';
+  rows+='<div style="padding:7px 12px;font-size:13px"><b style="color:var(--blue)">НикАрин (ваш расчёт)</b></div>';
+  rows+='<div style="padding:7px 12px;text-align:right;font-weight:700;font-size:13px;color:var(--blue)">'+f(ourU)+'</div>';
+  rows+='<div style="padding:7px 12px;text-align:right;font-weight:700;font-size:13px;color:var(--blue)">'+f(result.priceT)+'</div></div>';
+  rows+='</div>';
+  var vbg, vcl, vtxt;
+  if(pct<-10){vbg=var_gl;vcl='#0f4a25';vtxt='✓ Ваша цена на '+Math.abs(pct)+'% НИЖЕ рынка — сильное конкурентное преимущество!';}
+  else if(pct<=10){vbg='var(--ol)';vcl='var(--ora)';vtxt='≈ Ваша цена в рынке ('+sign+pct+'% от среднего). Хорошая позиция.';}
+  else{vbg='var(--rl)';vcl='var(--red)';vtxt='⚠ Ваша цена на '+Math.abs(pct)+'% выше рынка. Проверьте наценку.';}
+  rows+='<div style="padding:10px 13px;border-radius:var(--r2);font-size:13px;font-weight:600;background:'+vbg+';color:'+vcl+'">'+vtxt+'</div>';
+  rows+='<div style="margin-top:10px;padding:9px 13px;background:var(--s3);border-radius:var(--r2);font-size:11.5px;color:var(--t3);line-height:1.65">'+d.note+'</div>';
+  document.getElementById('mkt-body').innerHTML=rows;
+  document.getElementById('mkt-overlay').classList.add('on');
+}
+var var_gl='var(--gl)';
+function closeMkt(){document.getElementById('mkt-overlay').classList.remove('on');}
+
+// ================================================================
 //  INIT
 // ================================================================
 fillLens();
-updWeight();
+onQtyChange();
 onBuksyChange();
 checkPriceAge();
 renderLoad();
 </script>
+
+<!-- ПОПАП РЫНОЧНОГО АНАЛИЗА -->
+<div id="mkt-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;align-items:center;justify-content:center" onclick="if(event.target===this)closeMkt()">
+  <div style="background:var(--s);border-radius:var(--r);padding:24px;max-width:540px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,.22);max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div style="font-size:16px;font-weight:700;color:var(--blue)">📊 Анализ цен рынка РФ</div>
+      <button onclick="closeMkt()" style="border:none;background:transparent;font-size:22px;cursor:pointer;color:var(--t3);line-height:1;padding:0">×</button>
+    </div>
+    <div style="font-size:11.5px;color:var(--t3);margin-bottom:16px">Открытые прайсы производителей РФ: Русбелт, Борекс, НПФ ПромРегион, Зертех · Китай исключён · 2025 г.</div>
+    <div id="mkt-body"></div>
+  </div>
+</div>
+
 </body>
 </html>
